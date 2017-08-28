@@ -103,6 +103,7 @@
                 android:text="@{viewModel.sender}"
                 android:textColor="@color/layer_ui_text_gray"
                 android:textSize="@dimen/layer_ui_text_size_message_item_metadata"
+                android:paddingBottom="@dimen/layer_ui_message_item_cell_padding_top"
                 android:visibility="@{viewModel.shouldShowDisplayName ? View.VISIBLE : View.GONE}" />
 
             <LinearLayout
@@ -153,6 +154,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/layer_ui_padding_normal"
+                    android:layout_marginBottom="@dimen/layer_ui_message_item_cell_padding_top"
                     android:alpha="@{viewModel.messageSent ? 1.0f : 0.5f }"
                     android:minHeight="@dimen/layer_ui_message_item_cell_min_height"
                     android:minWidth="@dimen/layer_ui_message_item_cell_min_width" />
