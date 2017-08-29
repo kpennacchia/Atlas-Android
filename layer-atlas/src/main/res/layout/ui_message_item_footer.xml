@@ -39,8 +39,8 @@
             android:orientation="horizontal">
             <com.layer.ui.avatar.AvatarView
                 android:id="@+id/avatar"
-                android:layout_width="@dimen/layer_ui_message_avatar_item_single"
-                android:layout_height="@dimen/layer_ui_message_avatar_item_single"
+                android:layout_width="@dimen/layer_ui_avatar_width"
+                android:layout_height="@dimen/layer_ui_avatar_height"
                 android:layout_marginRight="@dimen/layer_ui_padding_narrow"
                 android:visibility="@{viewModel.avatarVisibility ? View.VISIBLE : View.GONE}"
                 app:participants="@{viewModel.participants}" />

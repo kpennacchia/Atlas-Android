@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="layer_ui_avatar_width">48dp</dimen>
-    <dimen name="layer_ui_avatar_height">48dp</dimen>
-    <dimen name="layer_ui_avatar_presence_height">14dp</dimen>
-    <dimen name="layer_ui_avatar_single_line_user_padding">12dp</dimen>
+   <!--Default Avatar width for small screen size-->
+   <dimen name="layer_ui_avatar_width">48dp</dimen>
+   <dimen name="layer_ui_avatar_height">48dp</dimen>
+   <dimen name="layer_ui_avatar_presence_height">14dp</dimen>
 
-    <dimen name="layer_ui_avatar_message_left_margin">12dp</dimen>
-    <dimen name="layer_ui_avatar_message_right_margin">8dp</dimen>
+   <!--Default padding for displaying Avatar and Name. Use: Dense single-line list items, ui_address_bar_item-->
+   <dimen name="layer_ui_avatar_left_padding_user_list">12dp</dimen>
+   <dimen name="layer_ui_avatar_right_padding_user_list">12dp</dimen>
+   <dimen name="layer_ui_avatar_user_list_height">72dp</dimen>
+
+   <!--To calculate the sender Margin,
+         @dimen/layer_ui_avatar_height = 48
+       + @dimen/layer_ui_avatar_left_padding_message = 12
+       + @dimen/layer_ui_avatar_right_padding_message = 8
+       + @dimen/layer_ui_message_item_cell_padding_far (Use in TextCellFactory bubble padding = 12)-->
+   <dimen name="layer_ui_message_item_sender_margin_left">80dp</dimen>
+
 </resources>
