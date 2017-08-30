@@ -23,6 +23,8 @@
     <dimen name="layer_ui_margin_medium">10dp</dimen>
     <dimen name="layer_ui_margin_small">8dp</dimen>
     <dimen name="layer_ui_margin_tiny">4dp</dimen>
+    <dimen name="layer_ui_margin_normal">6dp</dimen>
+
 
     <dimen name="layer_ui_padding_normal">16dp</dimen>
     <dimen name="layer_ui_padding_narrow">8dp</dimen>
@@ -100,9 +102,24 @@
     <!-- # Avatar                                                                         # -->
     <!-- ####################################################################################### -->
     <!--Default Avatar width for small screen size-->
-    <dimen name="layer_ui_avatar_width">40dp</dimen>
-    <dimen name="layer_ui_avatar_height">40dp</dimen>
+    <dimen name="layer_ui_avatar_width">32dp</dimen>
+    <dimen name="layer_ui_avatar_height">32dp</dimen>
     <dimen name="layer_ui_avatar_presence_height">12dp</dimen>
+
+    <dimen name="layer_ui_avatar_width_large">48dp</dimen>
+    <dimen name="layer_ui_avatar_height_large">48dp</dimen>
+    <dimen name="layer_ui_avatar_presence_large">14dp</dimen>
+
+    <dimen name="layer_ui_avatar_width_medium">40dp</dimen>
+    <dimen name="layer_ui_avatar_height_medium">40dp</dimen>
+    <dimen name="layer_ui_avatar_presence_medium">12dp</dimen>
+
+    <dimen name="layer_ui_avatar_width_small">32dp</dimen>
+    <dimen name="layer_ui_avatar_height_small">32dp</dimen>
+    <dimen name="layer_ui_avatar_presence_small">12dp</dimen>
+
+    <dimen name="layer_ui_avatar_width_tiny">12dp</dimen>
+    <dimen name="layer_ui_avatar_height_tiny">12dp</dimen>
 
     <!--Default padding for displaying Avatar and Name. Use: Dense single-line list items-->
     <dimen name="layer_ui_avatar_left_padding_user_list">16dp</dimen>
@@ -117,7 +134,7 @@
     + @dimen/layer_ui_avatar_left_padding_message
     + @dimen/layer_ui_avatar_right_padding_message
     + @dimen/layer_ui_message_item_cell_padding_far (Use in TextCellFactory bubble padding)-->
-    <dimen name="layer_ui_message_item_sender_margin_left">72dp</dimen>
+    <dimen name="layer_ui_message_item_sender_margin_left">64dp</dimen>
 
     <!-- ####################################################################################### -->
     <!-- # Layer UI Item                                                                         # -->

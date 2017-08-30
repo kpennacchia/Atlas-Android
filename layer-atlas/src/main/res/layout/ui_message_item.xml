@@ -116,6 +116,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
+                    android:layout_marginBottom="@dimen/layer_ui_message_item_cell_padding_bottom"
                     android:layout_marginLeft="@dimen/layer_ui_message_item_avatar_padding_left"
                     android:layout_marginRight="@dimen/layer_ui_avatar_right_padding_message">
                     <FrameLayout
