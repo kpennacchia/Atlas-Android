@@ -56,7 +56,7 @@
             android:background="@drawable/ui_swipeable_item_foreground_selector"
             android:duplicateParentState="true"
             android:orientation="vertical"
-            android:paddingRight="@dimen/layer_ui_padding_normal">
+            android:paddingRight="@dimen/layer_ui_margin_large">
 
             <LinearLayout
                 android:id="@+id/time_group"
@@ -116,9 +116,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
-                    android:layout_marginBottom="@dimen/layer_ui_message_item_cell_padding_bottom"
-                    android:layout_marginLeft="@dimen/layer_ui_message_item_avatar_padding_left"
-                    android:layout_marginRight="@dimen/layer_ui_avatar_right_padding_message">
+                    android:paddingBottom="@dimen/layer_ui_message_item_cell_padding_bottom"
+                    android:paddingLeft="@dimen/layer_ui_message_item_avatar_padding_left"
+                    android:paddingRight="@dimen/layer_ui_avatar_right_padding_message">
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
