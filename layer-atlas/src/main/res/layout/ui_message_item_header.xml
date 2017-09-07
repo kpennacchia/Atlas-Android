@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+<data>
+    <import type="android.view.View" />
+
+    <variable
+        name="viewModel"
+        type="com.layer.ui.message.MessageItemViewModel" />
+</data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/layer_ui_padding_normal"
+        android:paddingTop="@dimen/layer_ui_message_cluster_space">
+
+        <TextView
+            android:id="@+id/messageFooterNames"
+            android:layout_below="@id/messageFooterAnimation"
+            android:layout_marginTop="@dimen/layer_ui_message_item_time_group_padding_top"
+            android:text="Conversation began ***********8"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/layer_ui_text_gray"
+            android:textSize="@dimen/layer_ui_text_size_message_item_metadata"
+            android:paddingLeft="@dimen/layer_ui_padding_normal"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:maxLines="1"/>
+
+    </RelativeLayout>
+
+</layout>

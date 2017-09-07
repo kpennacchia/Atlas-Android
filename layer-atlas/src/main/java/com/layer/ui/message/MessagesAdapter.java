@@ -22,6 +22,7 @@ import com.layer.ui.adapters.ItemRecyclerViewAdapter;
 import com.layer.ui.adapters.ItemViewHolder;
 import com.layer.ui.databinding.UiMessageItemBinding;
 import com.layer.ui.databinding.UiMessageItemFooterBinding;
+import com.layer.ui.databinding.UiMessageItemHeaderBinding;
 import com.layer.ui.message.messagetypes.CellFactory;
 import com.layer.ui.message.messagetypes.MessageStyle;
 import com.layer.ui.util.DateFormatter;
@@ -67,6 +68,8 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
 
     private static final String TAG = MessagesAdapter.class.getSimpleName();
     private final static int VIEW_TYPE_FOOTER = 0;
+    private static final int VIEW_TYPE_DEFAULT_FIRST_VIEW = -2;
+
     protected final Handler mUiThreadHandler;
     protected final DisplayMetrics mDisplayMetrics;
     protected final Set<CellFactory> mCellFactories = new LinkedHashSet<CellFactory>();
@@ -82,12 +85,16 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     // Cells
     protected int mViewTypeCount = VIEW_TYPE_FOOTER;
     protected boolean mShouldShowAvatarInOneOnOneConversations;
+    //TODO do not initialize, property is passed from xml or java code
+    protected boolean mShouldDisplayFirstViewInMessageList = true;
     protected boolean mShouldShowAvatarPresence = true;
     private View mFooterView;
     private int mFooterPosition = 0;
     private Integer mRecipientStatusPosition;
     private boolean mReadReceiptsEnabled = true;
     private ImageCacheWrapper mImageCacheWrapper;
+    private int mMessageItemCount = -1;
+
 
     private int readCount = 0;
     private boolean delivered = false;
@@ -95,6 +102,8 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     private DateFormatter mDateFormatter;
     private Set<Identity> mUsersTyping;
     private boolean mOneOnOne;
+    private MessageAdapterEmptyRegister mMessageAdapterEmptyRegister;
+    private Set<Identity> mParticipants;
 
     public MessagesAdapter(Context context, LayerClient layerClient,
             ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter) {
@@ -279,8 +288,12 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
 
     @Override
     public int getItemViewType(int position) {
+        //When user wants a default view as the first message
+        if (mShouldDisplayFirstViewInMessageList && position == 0) return VIEW_TYPE_DEFAULT_FIRST_VIEW;
         if (mFooterView != null && position == mFooterPosition) return VIEW_TYPE_FOOTER;
-        Message message = getItem(position);
+
+        int index = mShouldDisplayFirstViewInMessageList ? position - 1 : position;
+        Message message = getItem(index);
         Identity authenticatedUser = mLayerClient.getAuthenticatedUser();
         boolean isMe = authenticatedUser != null && authenticatedUser.equals(message.getSender());
         for (CellFactory factory : mCellFactories) {
@@ -293,15 +306,37 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        if (viewType == VIEW_TYPE_FOOTER) {
-            MessageItemViewModel messageItemViewModel = new MessageItemViewModel(null);
-
-            UiMessageItemFooterBinding uiMessageItemFooterBinding =
-                    UiMessageItemFooterBinding.inflate(mLayoutInflater, parent, false);
-            return new MessageItemFooterViewHolder(uiMessageItemFooterBinding, messageItemViewModel,
-                    mImageCacheWrapper);
+        //Create first
+        if (mShouldDisplayFirstViewInMessageList && viewType == VIEW_TYPE_DEFAULT_FIRST_VIEW) {
+            return createFirstViewInMessageList(parent);
         }
 
+        if (viewType == VIEW_TYPE_FOOTER) {
+            return createFooterBindingView(parent);
+        }
+
+        return createMessageItemBindingView(parent, viewType);
+    }
+
+    private ItemViewHolder createFirstViewInMessageList(ViewGroup parent) {
+        MessageItemViewModel messageItemViewModel = new MessageItemViewModel(null);
+        UiMessageItemHeaderBinding uiMessageItemHeaderBinding =
+                UiMessageItemHeaderBinding.inflate(mLayoutInflater, parent, false);
+        return new MessageItemHeaderViewHolder(uiMessageItemHeaderBinding, messageItemViewModel);
+    }
+
+    //Create the FooterView which is displayed when participants type in a conversation
+    private ItemViewHolder createFooterBindingView(ViewGroup parent) {
+        MessageItemViewModel messageItemViewModel = new MessageItemViewModel(null);
+
+        UiMessageItemFooterBinding uiMessageItemFooterBinding =
+                UiMessageItemFooterBinding.inflate(mLayoutInflater, parent, false);
+        return new MessageItemFooterViewHolder(uiMessageItemFooterBinding, messageItemViewModel,
+                mImageCacheWrapper);
+    }
+
+    //Create the Binding for message
+    private ItemViewHolder createMessageItemBindingView(ViewGroup parent, int viewType) {
         MessageCell messageCell = mCellTypesByViewType.get(viewType);
 
         UiMessageItemBinding uiMessageItemMeBinding = UiMessageItemBinding.inflate(mLayoutInflater,
@@ -323,12 +358,20 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         if (mFooterView != null && position == mFooterPosition) {
             // Footer
             bindFooter((MessageItemFooterViewHolder) holder);
+        } else if (mShouldDisplayFirstViewInMessageList && position == 0) {
+            // Header
+            bindHeader((MessageItemHeaderViewHolder) holder);
         } else {
             // Cell
             bindCellViewHolder((MessageCellViewHolder) holder, position);
         }
         super.onBindViewHolder(holder, position, payloads);
     }
+
+     public void bindHeader(MessageItemHeaderViewHolder viewHolder) {
+         //TODO ************ Delete code
+         viewHolder.bind();
+     }
 
     public void bindFooter(MessageItemFooterViewHolder viewHolder) {
         viewHolder.mRoot.removeAllViews();
@@ -340,6 +383,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     }
 
     public void bindCellViewHolder(MessageCellViewHolder viewHolder, int position) {
+        position = mShouldDisplayFirstViewInMessageList ? position - 1 : position;
         Message message = getItem(position);
         viewHolder.mMessage = message;
         MessageCell messageCell = mCellTypesByViewType.get(viewHolder.getItemViewType());
@@ -464,8 +508,24 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
 
     @Override
     public int getItemCount() {
-        return mQueryController.getItemCount() + ((mFooterView == null) ? 0 : 1);
+        int count = 0;
+        if (mQueryController != null) {
+            count = mQueryController.getItemCount();
+        } else {
+            count = mItems.size();
+        }
+
+        if (count != mMessageItemCount) {
+            mMessageAdapterEmptyRegister.setIsMessageSizeZero(count == 0, mParticipants);
+        }
+        mMessageItemCount = count;
+
+        if (mShouldDisplayFirstViewInMessageList || mFooterView != null) {
+            count++;
+        }
+        return count;
     }
+
 
     @Override
     public Integer getPosition(Message message) {
@@ -561,7 +621,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         if (mReadReceiptsEnabled) {
             Integer oldPosition = mRecipientStatusPosition;
             // Set new position to last in the list
-            mRecipientStatusPosition = mQueryController.getItemCount() - 1;
+            mRecipientStatusPosition = (mQueryController.getItemCount() + (mShouldDisplayFirstViewInMessageList ? 1 : 0)) - 1;
             if (oldPosition != null) {
                 notifyItemChanged(oldPosition);
             }
@@ -575,7 +635,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
 
     @Override
     public void onQueryDataSetChanged(RecyclerViewController controller) {
-        mFooterPosition = mQueryController.getItemCount();
+        mFooterPosition = mQueryController.getItemCount() + (mShouldDisplayFirstViewInMessageList ? 1 : 0);
         updateRecipientStatusPosition();
         notifyDataSetChanged();
 
@@ -610,6 +670,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         updateRecipientStatusPosition();
         notifyItemInserted(position);
         if (mAppendListener != null && (position + 1) == getItemCount()) {
+            position = mShouldDisplayFirstViewInMessageList ? position - 1 : position;
             mAppendListener.onMessageAppend(this, getItem(position));
         }
 
@@ -671,6 +732,16 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         }
     }
 
+    public void
+    setMessageAdapterEmptyRegister(
+            MessageAdapterEmptyRegister messageAdapterEmptyRegister) {
+        mMessageAdapterEmptyRegister = messageAdapterEmptyRegister;
+    }
+
+    public void setParticipants(Set<Identity> participants) {
+        mParticipants = participants;
+    }
+
     /**
      * Listens for inserts to the end of an AtlasQueryAdapter.
      */
@@ -683,5 +754,13 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
          * @param message The item appended to the AtlasQueryAdapter.
          */
         void onMessageAppend(MessagesAdapter adapter, Message message);
+    }
+
+    /**
+     * Call back use to notify the View when the Data source in the Adapter is empty
+     * The visibility of the Empty View can be toggled on and off
+     */
+    interface MessageAdapterEmptyRegister {
+        void setIsMessageSizeZero(boolean isMessageSizeZero, Set<Identity> participants);
     }
 }

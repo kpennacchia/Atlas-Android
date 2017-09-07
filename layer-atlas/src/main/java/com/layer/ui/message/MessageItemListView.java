@@ -168,7 +168,9 @@ public class MessageItemListView  extends ConstraintLayout {
     public void setConversation(Conversation conversation) {
         if (conversation != null) {
             mAdapter.setReadReceiptsEnabled(conversation.isReadReceiptsEnabled());
+            mAdapter.setParticipants(conversation.getParticipants());
         }
+
         mAdapter.setQuery(Query.builder(Message.class)
                 .predicate(new Predicate(Message.Property.CONVERSATION, Predicate.Operator.EQUAL_TO, conversation))
                 .sortDescriptor(new SortDescriptor(Message.Property.POSITION, SortDescriptor.Order.ASCENDING))
