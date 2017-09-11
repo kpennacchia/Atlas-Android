@@ -85,8 +85,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     // Cells
     protected int mViewTypeCount = VIEW_TYPE_FOOTER;
     protected boolean mShouldShowAvatarInOneOnOneConversations;
-    //TODO do not initialize, property is passed from xml or java code
-    protected boolean mShouldDisplayFirstViewInMessageList = true;
+    protected boolean mShouldDisplayFirstViewInMessageList;
     protected boolean mShouldShowAvatarPresence = true;
     private View mFooterView;
     private int mFooterPosition = 0;
@@ -94,6 +93,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     private boolean mReadReceiptsEnabled = true;
     private ImageCacheWrapper mImageCacheWrapper;
     private int mMessageItemCount = -1;
+    private int mMessageHeaderView = -1;
 
 
     private int readCount = 0;
@@ -369,8 +369,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     }
 
      public void bindHeader(MessageItemHeaderViewHolder viewHolder) {
-         //TODO ************ Delete code
-         viewHolder.bind();
+         viewHolder.bind(mMessageHeaderView);
      }
 
     public void bindFooter(MessageItemFooterViewHolder viewHolder) {
@@ -740,6 +739,11 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
 
     public void setParticipants(Set<Identity> participants) {
         mParticipants = participants;
+    }
+
+    public void setHeaderView(int headerView) {
+        mShouldDisplayFirstViewInMessageList = true;
+        mMessageHeaderView = headerView;
     }
 
     /**

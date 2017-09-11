@@ -33,6 +33,7 @@ public class MessageItemListView  extends ConstraintLayout {
     protected MessagesRecyclerView mMessagesRecyclerView;
     protected LinearLayoutManager mLinearLayoutManager;
     protected MessagesAdapter mAdapter;
+    private int mHeaderView = -1;
 
     public MessageItemListView(Context context) {
         this(context, null, 0);
@@ -73,6 +74,7 @@ public class MessageItemListView  extends ConstraintLayout {
 
     public void setAdapter(final MessagesAdapter adapter) {
         adapter.setStyle(mMessageStyle);
+        adapter.setHeaderView(mHeaderView);
         mAdapter = adapter;
         mMessagesRecyclerView.setAdapter(adapter);
         setShouldShowAvatarInOneOnOneConversations(mShouldShowAvatarsInOneOnOneConversations);
@@ -177,6 +179,10 @@ public class MessageItemListView  extends ConstraintLayout {
                 .build()).refresh();
     }
 
+    public void setHeaderView(int headerView) {
+        mHeaderView = headerView;
+    }
+
     public void parseStyle(Context context, AttributeSet attrs, int defStyle) {
         TypedArray ta = context.getTheme().obtainStyledAttributes(attrs, R.styleable.MessageItemListView, R.attr.MessageItemListView, defStyle);
         MessageStyle.Builder messageStyleBuilder = new MessageStyle.Builder();
@@ -201,4 +207,5 @@ public class MessageItemListView  extends ConstraintLayout {
         ta.recycle();
         mMessageStyle = messageStyleBuilder.build();
     }
+
 }
