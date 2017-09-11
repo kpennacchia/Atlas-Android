@@ -1,26 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-<data>
-    <import type="android.view.View" />
-
-    <variable
-        name="viewModel"
-        type="com.layer.ui.message.MessageItemViewModel" />
-</data>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layer_ui_padding_normal"
-        android:paddingTop="@dimen/layer_ui_message_cluster_space">
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/layer_ui_padding_normal"
             android:id="@+id/root"/>
-    </RelativeLayout>
-
 </layout>
+

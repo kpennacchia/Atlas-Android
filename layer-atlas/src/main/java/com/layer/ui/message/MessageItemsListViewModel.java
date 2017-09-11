@@ -22,6 +22,7 @@ public class MessageItemsListViewModel extends BaseObservable {
     protected boolean mIsMessageSizeZero;
     protected String emptyMessageText;
     private LayerClient mLayerClient;
+    private EmptyMessageFormatter mEmptyMessageFormatter;
 
     protected MessagesAdapter.MessageAdapterEmptyRegister mMessageAdapterEmptyRegister = new MessagesAdapter.MessageAdapterEmptyRegister() {
         @Override
@@ -35,33 +36,13 @@ public class MessageItemsListViewModel extends BaseObservable {
     };
 
     private String createEmptyMessageListText(Set<Identity> participants) {
-        int counter = 1;
-        String emptyMessage = "Start a Conversation with";
-
-        participants.remove(mLayerClient.getAuthenticatedUser());
-
-        boolean hasTwoParticipants = participants.size() == 2;
-        for (Identity participant : participants) {
-
-            if (counter ==2) {
-                emptyMessage = emptyMessage + (hasTwoParticipants ? " and " : ", ") + participant.getDisplayName();
-                break;
-            }
-            emptyMessage = emptyMessage + " " + participant.getDisplayName();
-            counter++;
-        }
-        int remainder = participants.size() - 2;
-        if (!hasTwoParticipants && remainder > 0) {
-            emptyMessage = remainder > 0 ? emptyMessage + " and "
-                    + (remainder ==1 ? " one person " : remainder + " others")
-                    : emptyMessage;
-        }
-        return emptyMessage;
+        return mEmptyMessageFormatter.createEmptyMessageListText(participants, mLayerClient.getAuthenticatedUser());
     }
 
     public MessageItemsListViewModel(Context context, LayerClient layerClient,
-            ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter) {
+            ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter, EmptyMessageFormatter emptyMessageFormatter) {
         mLayerClient = layerClient;
+        mEmptyMessageFormatter = emptyMessageFormatter;
         mMessageItemsAdapter = new MessagesAdapter(context, layerClient, imageCacheWrapper, dateFormatter);
         mMessageItemsAdapter.setMessageAdapterEmptyRegister(mMessageAdapterEmptyRegister);
     }
