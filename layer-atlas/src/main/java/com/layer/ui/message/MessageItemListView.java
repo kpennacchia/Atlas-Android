@@ -74,7 +74,9 @@ public class MessageItemListView  extends ConstraintLayout {
 
     public void setAdapter(final MessagesAdapter adapter) {
         adapter.setStyle(mMessageStyle);
-        adapter.setHeaderView(mHeaderView);
+        if (mHeaderView != -1) {
+            adapter.setHeaderView(mHeaderView);
+        }
         mAdapter = adapter;
         mMessagesRecyclerView.setAdapter(adapter);
         setShouldShowAvatarInOneOnOneConversations(mShouldShowAvatarsInOneOnOneConversations);
