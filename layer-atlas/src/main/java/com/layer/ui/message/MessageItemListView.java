@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.annotation.XmlRes;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -181,7 +182,7 @@ public class MessageItemListView  extends ConstraintLayout {
                 .build()).refresh();
     }
 
-    public void setHeaderView(int headerView) {
+    public void setHeaderView(@XmlRes int headerView) {
         mHeaderView = headerView;
     }
 

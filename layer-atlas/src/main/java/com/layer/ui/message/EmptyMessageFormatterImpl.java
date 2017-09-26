@@ -2,33 +2,30 @@ package com.layer.ui.message;
 
 import com.layer.sdk.messaging.Identity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class EmptyMessageFormatterImpl implements EmptyMessageFormatter {
 
     @Override
     public String createEmptyMessageListText(Set<Identity> participants, Identity authenticatedUser) {
-        int counter = 1;
+
         String emptyMessage = "Start a Conversation with";
-
         participants.remove(authenticatedUser);
+        List<Identity> participantList = new ArrayList<>(participants);
 
-        boolean hasTwoParticipants = participants.size() == 2;
-        for (Identity participant : participants) {
+        if (participants.size() == 1 ) {
+            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName();
+        } else if (participants.size() == 2) {
+            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + " & " + participantList.get(1).getDisplayName();
+        } else if (participants.size() == 3) {
+            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + " & " + participantList.get(1).getDisplayName() + " & " + "one other";
+        } else {
+            int remainder = participantList.size() - 2;
+            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + " & " + participantList.get(1).getDisplayName() + " & " + remainder +" others";
+        }
 
-            if (counter ==2) {
-                emptyMessage = emptyMessage + (hasTwoParticipants ? " and " : ", ") + participant.getDisplayName();
-                break;
-            }
-            emptyMessage = emptyMessage + " " + participant.getDisplayName();
-            counter++;
-        }
-        int remainder = participants.size() - 2;
-        if (!hasTwoParticipants && remainder > 0) {
-            emptyMessage = remainder > 0 ? emptyMessage + " and "
-                    + (remainder ==1 ? " one person " : remainder + " others")
-                    : emptyMessage;
-        }
         return emptyMessage;
     }
 }

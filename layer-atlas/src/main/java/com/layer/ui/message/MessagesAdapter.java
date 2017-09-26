@@ -5,6 +5,7 @@ import android.databinding.ViewDataBinding;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.XmlRes;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -85,7 +86,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     // Cells
     protected int mViewTypeCount = VIEW_TYPE_FOOTER;
     protected boolean mShouldShowAvatarInOneOnOneConversations;
-    protected boolean mShouldDisplayFirstViewInMessageList;
+    protected boolean mShouldDisplayListHeader;
     protected boolean mShouldShowAvatarPresence = true;
     private View mFooterView;
     private int mFooterPosition = 0;
@@ -289,10 +290,10 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     @Override
     public int getItemViewType(int position) {
         //When user wants a default view as the first message
-        if (mShouldDisplayFirstViewInMessageList && position == 0) return VIEW_TYPE_DEFAULT_FIRST_VIEW;
+        if (mShouldDisplayListHeader && position == 0) return VIEW_TYPE_DEFAULT_FIRST_VIEW;
         if (mFooterView != null && position == mFooterPosition) return VIEW_TYPE_FOOTER;
 
-        int index = mShouldDisplayFirstViewInMessageList ? position - 1 : position;
+        int index = mShouldDisplayListHeader ? position - 1 : position;
         Message message = getItem(index);
         Identity authenticatedUser = mLayerClient.getAuthenticatedUser();
         boolean isMe = authenticatedUser != null && authenticatedUser.equals(message.getSender());
@@ -307,8 +308,8 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         //Create first
-        if (mShouldDisplayFirstViewInMessageList && viewType == VIEW_TYPE_DEFAULT_FIRST_VIEW) {
-            return createFirstViewInMessageList(parent);
+        if (mShouldDisplayListHeader && viewType == VIEW_TYPE_DEFAULT_FIRST_VIEW) {
+            return createHeaderViewInMessageList(parent);
         }
 
         if (viewType == VIEW_TYPE_FOOTER) {
@@ -318,7 +319,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         return createMessageItemBindingView(parent, viewType);
     }
 
-    private ItemViewHolder createFirstViewInMessageList(ViewGroup parent) {
+    private ItemViewHolder createHeaderViewInMessageList(ViewGroup parent) {
         MessageItemViewModel messageItemViewModel = new MessageItemViewModel(null);
         UiMessageItemHeaderBinding uiMessageItemHeaderBinding =
                 UiMessageItemHeaderBinding.inflate(mLayoutInflater, parent, false);
@@ -358,7 +359,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         if (mFooterView != null && position == mFooterPosition) {
             // Footer
             bindFooter((MessageItemFooterViewHolder) holder);
-        } else if (mShouldDisplayFirstViewInMessageList && position == 0) {
+        } else if (mShouldDisplayListHeader && position == 0) {
             // Header
             bindHeader((MessageItemHeaderViewHolder) holder);
         } else {
@@ -382,7 +383,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     }
 
     public void bindCellViewHolder(MessageCellViewHolder viewHolder, int position) {
-        position = mShouldDisplayFirstViewInMessageList ? position - 1 : position;
+        position = mShouldDisplayListHeader ? position - 1 : position;
         Message message = getItem(position);
         viewHolder.mMessage = message;
         MessageCell messageCell = mCellTypesByViewType.get(viewHolder.getItemViewType());
@@ -519,7 +520,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         }
         mMessageItemCount = count;
 
-        if (mShouldDisplayFirstViewInMessageList || mFooterView != null) {
+        if (mShouldDisplayListHeader || mFooterView != null) {
             count++;
         }
         return count;
@@ -620,7 +621,8 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         if (mReadReceiptsEnabled) {
             Integer oldPosition = mRecipientStatusPosition;
             // Set new position to last in the list
-            mRecipientStatusPosition = (mQueryController.getItemCount() + (mShouldDisplayFirstViewInMessageList ? 1 : 0)) - 1;
+            mRecipientStatusPosition = (mQueryController.getItemCount() + (mShouldDisplayListHeader
+                    ? 1 : 0)) - 1;
             if (oldPosition != null) {
                 notifyItemChanged(oldPosition);
             }
@@ -634,7 +636,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
 
     @Override
     public void onQueryDataSetChanged(RecyclerViewController controller) {
-        mFooterPosition = mQueryController.getItemCount() + (mShouldDisplayFirstViewInMessageList ? 1 : 0);
+        mFooterPosition = mQueryController.getItemCount() + (mShouldDisplayListHeader ? 1 : 0);
         updateRecipientStatusPosition();
         notifyDataSetChanged();
 
@@ -669,7 +671,7 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         updateRecipientStatusPosition();
         notifyItemInserted(position);
         if (mAppendListener != null && (position + 1) == getItemCount()) {
-            position = mShouldDisplayFirstViewInMessageList ? position - 1 : position;
+            position = mShouldDisplayListHeader ? position - 1 : position;
             mAppendListener.onMessageAppend(this, getItem(position));
         }
 
@@ -741,8 +743,8 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         mParticipants = participants;
     }
 
-    public void setHeaderView(int headerView) {
-        mShouldDisplayFirstViewInMessageList = true;
+    public void setHeaderView(@XmlRes int headerView) {
+        mShouldDisplayListHeader = true;
         mMessageHeaderView = headerView;
     }
 
