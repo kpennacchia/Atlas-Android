@@ -34,6 +34,7 @@ import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +94,6 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     private Integer mRecipientStatusPosition;
     private boolean mReadReceiptsEnabled = true;
     private ImageCacheWrapper mImageCacheWrapper;
-    private int mMessageItemCount = -1;
     private int mMessageHeaderView = -1;
 
 
@@ -103,12 +103,13 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
     private DateFormatter mDateFormatter;
     private Set<Identity> mUsersTyping;
     private boolean mOneOnOne;
-    private MessageAdapterEmptyRegister mMessageAdapterEmptyRegister;
-    private Set<Identity> mParticipants;
+    private Set<Identity> mParticipants = new HashSet<>();
+    private Identity mActiveUser;
 
     public MessagesAdapter(Context context, LayerClient layerClient,
             ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter) {
         super(context, layerClient, TAG, false);
+        mActiveUser = layerClient.getAuthenticatedUser();
         mImageCacheWrapper = imageCacheWrapper;
         mDateFormatter = dateFormatter;
         mUiThreadHandler = new Handler(Looper.getMainLooper());
@@ -515,11 +516,6 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
             count = mItems.size();
         }
 
-        if (count != mMessageItemCount) {
-            mMessageAdapterEmptyRegister.setIsMessageSizeZero(count == 0, mParticipants);
-        }
-        mMessageItemCount = count;
-
         if (mShouldDisplayListHeader || mFooterView != null) {
             count++;
         }
@@ -733,14 +729,18 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         }
     }
 
-    public void
-    setMessageAdapterEmptyRegister(
-            MessageAdapterEmptyRegister messageAdapterEmptyRegister) {
-        mMessageAdapterEmptyRegister = messageAdapterEmptyRegister;
-    }
-
     public void setParticipants(Set<Identity> participants) {
         mParticipants = participants;
+        //Needed to trigger AdapterDataObserver onChanged in MessageRecyclerView
+        notifyDataSetChanged();
+    }
+
+    public Set<Identity> getParticipants() {
+        return mParticipants;
+    }
+
+    public Identity getActiveUser() {
+        return mActiveUser;
     }
 
     public void setHeaderView(@XmlRes int headerView) {
@@ -762,11 +762,4 @@ public class MessagesAdapter extends ItemRecyclerViewAdapter<Message, MessageIte
         void onMessageAppend(MessagesAdapter adapter, Message message);
     }
 
-    /**
-     * Call back use to notify the View when the Data source in the Adapter is empty
-     * The visibility of the Empty View can be toggled on and off
-     */
-    interface MessageAdapterEmptyRegister {
-        void setIsMessageSizeZero(boolean isMessageSizeZero, Set<Identity> participants);
-    }
 }

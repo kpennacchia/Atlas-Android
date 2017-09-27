@@ -11,6 +11,7 @@ public class EmptyMessageFormatterImpl implements EmptyMessageFormatter {
     @Override
     public String createEmptyMessageListText(Set<Identity> participants, Identity authenticatedUser) {
 
+        if (participants.size() == 0 || authenticatedUser == null) return "";
         String emptyMessage = "Start a Conversation with";
         participants.remove(authenticatedUser);
         List<Identity> participantList = new ArrayList<>(participants);
@@ -20,10 +21,10 @@ public class EmptyMessageFormatterImpl implements EmptyMessageFormatter {
         } else if (participants.size() == 2) {
             emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + " & " + participantList.get(1).getDisplayName();
         } else if (participants.size() == 3) {
-            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + " & " + participantList.get(1).getDisplayName() + " & " + "one other";
+            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + ", " + participantList.get(1).getDisplayName() + " & " + "one other";
         } else {
             int remainder = participantList.size() - 2;
-            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + " & " + participantList.get(1).getDisplayName() + " & " + remainder +" others";
+            emptyMessage = emptyMessage + " " + participantList.get(0).getDisplayName() + ", " + participantList.get(1).getDisplayName() + " & " + remainder +" others";
         }
 
         return emptyMessage;

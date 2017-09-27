@@ -48,12 +48,13 @@ public class MessageItemListView  extends ConstraintLayout {
         super(context, attrs, defStyleAttr);
         parseStyle(context, attrs, defStyleAttr);
 
-        inflate(getContext(), R.layout.ui_message_items_list, this);
+        View view = inflate(getContext(), R.layout.ui_message_items_list, this);
         mMessagesRecyclerView = (MessagesRecyclerView) findViewById(R.id.ui_message_recycler);
 
         mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mLinearLayoutManager.setStackFromEnd(true);
         mMessagesRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mMessagesRecyclerView.setEmptyView(view.getRootView().findViewById(R.id.emptyMessageListTextView));
 
         DefaultItemAnimator noChangeAnimator = new DefaultItemAnimator() {
             @Override

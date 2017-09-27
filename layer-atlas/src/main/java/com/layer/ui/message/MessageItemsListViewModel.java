@@ -5,7 +5,6 @@ import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 
 import com.layer.sdk.LayerClient;
-import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.Message;
 import com.layer.ui.message.messagetypes.CellFactory;
 import com.layer.ui.util.DateFormatter;
@@ -13,7 +12,6 @@ import com.layer.ui.util.imagecache.ImageCacheWrapper;
 import com.layer.ui.util.views.SwipeableItem;
 
 import java.util.List;
-import java.util.Set;
 
 public class MessageItemsListViewModel extends BaseObservable {
     protected MessagesAdapter mMessageItemsAdapter;
@@ -21,30 +19,10 @@ public class MessageItemsListViewModel extends BaseObservable {
     protected SwipeableItem.OnItemSwipeListener<Message> mItemSwipeListener;
     protected boolean mIsMessageSizeZero;
     protected String emptyMessageText;
-    private LayerClient mLayerClient;
-    private EmptyMessageFormatter mEmptyMessageFormatter;
-
-    protected MessagesAdapter.MessageAdapterEmptyRegister mMessageAdapterEmptyRegister = new MessagesAdapter.MessageAdapterEmptyRegister() {
-        @Override
-        public void setIsMessageSizeZero(boolean isMessageSizeZero, Set<Identity> participants) {
-            mIsMessageSizeZero = isMessageSizeZero;
-            if (participants != null) {
-                emptyMessageText = createEmptyMessageListText(participants);
-            }
-            notifyChange();
-        }
-    };
-
-    private String createEmptyMessageListText(Set<Identity> participants) {
-        return mEmptyMessageFormatter.createEmptyMessageListText(participants, mLayerClient.getAuthenticatedUser());
-    }
 
     public MessageItemsListViewModel(Context context, LayerClient layerClient,
-            ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter, EmptyMessageFormatter emptyMessageFormatter) {
-        mLayerClient = layerClient;
-        mEmptyMessageFormatter = emptyMessageFormatter;
+            ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter) {
         mMessageItemsAdapter = new MessagesAdapter(context, layerClient, imageCacheWrapper, dateFormatter);
-        mMessageItemsAdapter.setMessageAdapterEmptyRegister(mMessageAdapterEmptyRegister);
     }
 
     @Bindable
