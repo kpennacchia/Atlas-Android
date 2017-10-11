@@ -1,23 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
-
-<com.layer.ui.message.MessagesRecyclerView
-    android:id="@+id/ui_message_recycler"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/emptyMessageListTextView"
-        android:layout_marginTop="@dimen/layer_ui_message_item_time_group_padding_top"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/layer_ui_text_gray"
-        android:layout_centerInParent="true"
-        android:textSize="@dimen/layer_ui_text_size_message_item_metadata"
-        android:paddingLeft="@dimen/layer_ui_padding_normal"
-        android:paddingRight="@dimen/layer_ui_padding_normal"
-        android:layout_gravity="center"
-        android:maxLines="2"/>
+    xmlns:tool="http://schemas.android.com/tools">
+        <com.layer.ui.recyclerview.ItemsRecyclerView
+            android:id="@+id/ui_message_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 </merge>

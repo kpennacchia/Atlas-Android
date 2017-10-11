@@ -18,11 +18,10 @@ public class MessageItemsListViewModel extends BaseObservable {
     protected MessageItemsAdapter mMessageItemsAdapter;
     protected List<CellFactory> mCellFactories;
     protected SwipeableItem.OnItemSwipeListener<Message> mItemSwipeListener;
-    protected boolean mIsMessageSizeZero;
-    protected String emptyMessageText;
 
     public MessageItemsListViewModel(Context context, LayerClient layerClient,
-                                     ImageCacheWrapper imageCacheWrapper, DateFormatter dateFormatter,
+                                     ImageCacheWrapper imageCacheWrapper,
+                                     DateFormatter dateFormatter,
                                      IdentityFormatter identityFormatter) {
         mMessageItemsAdapter = new MessageItemsAdapter(context, layerClient,
                 imageCacheWrapper, dateFormatter, identityFormatter);
@@ -48,17 +47,8 @@ public class MessageItemsListViewModel extends BaseObservable {
         notifyChange();
     }
 
+    @Bindable
     public SwipeableItem.OnItemSwipeListener<Message> getItemSwipeListener() {
         return mItemSwipeListener;
-    }
-
-    @Bindable
-    public boolean getIsMessageSizeZero() {
-        return mIsMessageSizeZero;
-    }
-
-    @Bindable
-    public String getEmptyMessageText() {
-        return emptyMessageText;
     }
 }
