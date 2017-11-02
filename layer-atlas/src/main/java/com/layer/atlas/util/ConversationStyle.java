@@ -71,6 +71,10 @@ public final class ConversationStyle {
         this.mDateUnreadTextTypeface = dateUnreadTextTypeface;
     }
 
+	public void setAvatarStyle(AvatarStyle avatarStyle) {
+		mAvatarStyle = avatarStyle;
+	}
+
     @ColorInt
     public int getTitleTextColor() {
         return mTitleTextColor;

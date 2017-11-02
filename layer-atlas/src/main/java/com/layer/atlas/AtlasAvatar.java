@@ -20,6 +20,7 @@ import com.layer.sdk.messaging.Identity;
 import com.layer.sdk.messaging.Presence;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,9 +41,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class AtlasAvatar extends View {
     public static final String TAG = AtlasAvatar.class.getSimpleName();
 
-    private final static CircleTransform SINGLE_TRANSFORM = new CircleTransform(TAG + ".single");
-    private final static CircleTransform MULTI_TRANSFORM = new CircleTransform(TAG + ".multi");
-
     private static final Paint PAINT_TRANSPARENT = new Paint();
     private static final Paint PAINT_BITMAP = new Paint();
 
@@ -51,6 +49,8 @@ public class AtlasAvatar extends View {
     private final Paint mPaintBackground = new Paint();
     private final Paint mPresencePaint = new Paint();
     private final Paint mBackgroundPaint = new Paint();
+	private Transformation mSingleTransform;
+	private Transformation mMultiTransform;
 
     private boolean mShouldShowPresence = true;
 
@@ -123,6 +123,8 @@ public class AtlasAvatar extends View {
         mPaintBorder.setColor(avatarStyle.getAvatarBorderColor());
         mPaintInitials.setColor(avatarStyle.getAvatarTextColor());
         mPaintInitials.setTypeface(avatarStyle.getAvatarTextTypeface());
+		mSingleTransform = avatarStyle.getSingleTransform();
+		mMultiTransform = avatarStyle.getMultiTransform();
         return this;
     }
 
@@ -294,10 +296,21 @@ public class AtlasAvatar extends View {
                     if (targetUrl != null && targetUrl.trim().length() == 0) {
                         targetUrl = null;
                     }
+
+					Transformation singleTransform = mSingleTransform;
+					Transformation multiTransform = mMultiTransform;
+					if (singleTransform == null) {
+						singleTransform = new CircleTransform(TAG + ".single");
+					}
+					if (multiTransform == null) {
+						multiTransform = new CircleTransform(TAG + ".multi");
+					}
+					Transformation transformation = (avatarCount > 1) ? multiTransform : singleTransform;
+
                     mPicasso.load(targetUrl)
                             .tag(AtlasAvatar.TAG).noPlaceholder().noFade()
                             .centerCrop().resize(size, size)
-                            .transform((avatarCount > 1) ? MULTI_TRANSFORM : SINGLE_TRANSFORM)
+							.transform(transformation)
                             .into(imageTarget);
                 }
                 mPendingLoads.clear();
