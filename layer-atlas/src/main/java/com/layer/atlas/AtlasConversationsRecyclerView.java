@@ -110,6 +110,15 @@ public class AtlasConversationsRecyclerView extends RecyclerView {
     }
 
     /**
+     * Access to the conversation style for further customization of views.
+     *
+     * @return The ConversationStyle instance that is used to customize views in this AtlasConversationsRecyclerView.
+     */
+    public ConversationStyle getConversationStyle() {
+        return conversationStyle;
+    }
+
+    /**
      * Convenience pass-through to this list's AtlasConversationsAdapter.
      *
      * @see AtlasConversationsAdapter#setOnConversationClickListener(AtlasConversationsAdapter.OnConversationClickListener)
