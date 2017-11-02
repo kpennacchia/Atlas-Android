@@ -24,9 +24,7 @@ public final class EmptyMessageListHeaderView extends FrameLayout {
     public EmptyMessageListHeaderView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-
+        LayoutInflater inflater = LayoutInflater.from(getContext());
         mUiEmptyMessageItemsListBinding =
                 DataBindingUtil.inflate(inflater, R.layout.ui_empty_message_item, this,
                         true);

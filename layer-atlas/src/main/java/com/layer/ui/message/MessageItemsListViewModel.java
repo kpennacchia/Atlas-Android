@@ -47,7 +47,6 @@ public class MessageItemsListViewModel extends BaseObservable {
         notifyChange();
     }
 
-    @Bindable
     public SwipeableItem.OnItemSwipeListener<Message> getItemSwipeListener() {
         return mItemSwipeListener;
     }
